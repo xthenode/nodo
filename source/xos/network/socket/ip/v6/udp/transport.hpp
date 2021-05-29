@@ -22,6 +22,7 @@
 #define XOS_NETWORK_SOCKET_IP_V6_UDP_TRANSPORT_HPP
 
 #include "xos/network/socket/ip/udp/transport.hpp"
+#include "xos/network/socket/ip/v6/transport.hpp"
 
 namespace xos {
 namespace network {
@@ -31,17 +32,55 @@ namespace v6 {
 namespace udp {
 
 /// class transportt
-template <class TImplements = ip::udp::transport>
+template <class TImplements = ip::udp::transportt<ip::v6::transport> >
 class exported transportt: virtual public TImplements {
 public:
     typedef TImplements implements;
     typedef transportt derives; 
     
+    typedef typename implements::domain_t domain_t;
+    enum { domain_unspec = implements::domain_unspec };
+    
+    typedef typename implements::type_t type_t;
+    enum { type_unspec = implements::type_unspec };
+    
+    typedef typename implements::protocol_t protocol_t;
+    enum { protocol_unspec = implements::protocol_unspec };
+
     /// constructors / destructor
     virtual ~transportt() {
     }
 }; /// class transportt
 typedef transportt<> transport;
+
+namespace extended {
+/// class transportt
+template <class TExtends = ip::udp::extended::transport, class TImplements = ip::v6::udp::transport>
+class exported transportt: virtual public TImplements, public TExtends {
+public:
+    typedef TImplements implements;
+    typedef TExtends extends;
+    typedef transportt derives;
+
+    typedef typename implements::domain_t domain_t;
+    enum { domain_unspec = implements::domain_unspec };
+    
+    typedef typename implements::type_t type_t;
+    enum { type_unspec = implements::type_unspec };
+    
+    typedef typename implements::protocol_t protocol_t;
+    enum { protocol_unspec = implements::protocol_unspec };
+
+    /// constructor / destructor
+    transportt(const transportt& copy): extends(copy) {
+    }
+    transportt() {
+    }
+    virtual ~transportt() {
+    }
+}; /// class transportt
+typedef transportt<> transport;
+} /// namespace extended
 
 } /// namespace udp
 } /// namespace v6

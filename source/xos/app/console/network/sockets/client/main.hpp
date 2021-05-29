@@ -66,8 +66,8 @@ protected:
     typedef typename extends::out_writer_t out_writer_t;
     typedef typename extends::err_writer_t err_writer_t;
 
-    /// ...sockets_client_run
-    virtual int sockets_client_run(int argc, char_t** argv, char_t** env) {
+    /// ...sockets_...client_run
+    virtual int sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         const xos::network::socket::sockstring_t& host = this->connect_host();
         const xos::network::socket::sockport_t& port = this->connect_port();
@@ -83,6 +83,25 @@ protected:
                     
                     err = all_socket_connect(cn, argc, argv, env);
                 }
+                cn.close();
+            }
+            ep.detach();
+        }
+        return err;
+    }
+    virtual int sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        const xos::network::socket::sockstring_t& host = this->connect_host();
+        const xos::network::socket::sockport_t& port = this->connect_port();
+        xos::network::socket::endpoint& ep = this->connect_ep();
+        xos::network::socket::transport& tp = this->connect_tp();
+        xos::network::socket::interface &cn = this->connect_iface();
+
+        if ((ep.attach(host, port))) {
+
+            if ((cn.open(tp))) {
+                
+                err = this->all_socket_send_request_to(ep, cn, argc, argv, env);
                 cn.close();
             }
             ep.detach();
@@ -121,6 +140,15 @@ protected:
         return err;
     }
 
+    /// ...socket_send_request_to
+    virtual int socket_send_request_to
+    (xos::network::socket::endpoint& ep, 
+     xos::network::socket::interface& cn, int argc, char_t** argv, char_t**env) {
+        int err = 0;
+        string_t& connect_request = this->connect_request();
+        err = this->all_socket_send_request_to(ep, cn, connect_request, argc, argv, env);
+        return err;
+    }
     /// ...socket_send_request
     virtual int socket_send_request(xos::network::socket::interface& cn, int argc, char_t** argv, char_t**env) {
         int err = 0;

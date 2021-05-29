@@ -66,8 +66,8 @@ protected:
     typedef typename extends::out_writer_t out_writer_t;
     typedef typename extends::err_writer_t err_writer_t;
 
-    /// ...sockets_accept_run
-    virtual int sockets_accept_run(int argc, char_t** argv, char_t** env) {
+    /// ...sockets_stream_accept_run
+    virtual int sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         const xos::network::socket::sockstring_t& host = this->accept_host();
         const xos::network::socket::sockport_t& port = this->accept_port();
@@ -88,7 +88,7 @@ protected:
                     do {
                         if ((ac.accept(cn, &ad, al))) {
                             
-                            if ((err = all_socket_accept(cn, argc, argv, env))) {
+                            if ((err = all_socket_stream_accept(cn, argc, argv, env))) {
                                 this->set_accept_done();
                             }
                             cn.close();
@@ -103,8 +103,8 @@ protected:
         return err;
     }
 
-    /// ...socket_accept
-    virtual int socket_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+    /// ...socket_stream_accept
+    virtual int socket_stream_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
         if (!(err = this->all_socket_recv_request(cn, argc, argv, env))) {
             if (!(err = this->all_socket_process_request(cn, argc, argv, env))) {
@@ -114,20 +114,20 @@ protected:
         }
         return err;
     }
-    virtual int before_socket_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+    virtual int before_socket_stream_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_socket_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+    virtual int after_socket_stream_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_socket_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+    virtual int all_socket_stream_accept(xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_socket_accept(cn, argc, argv, env))) {
+        if (!(err = before_socket_stream_accept(cn, argc, argv, env))) {
             int err2 = 0;
-            err = socket_accept(cn, argc, argv, env);
-            if ((err2 = after_socket_accept(cn, argc, argv, env))) {
+            err = socket_stream_accept(cn, argc, argv, env);
+            if ((err2 = after_socket_stream_accept(cn, argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
@@ -156,7 +156,98 @@ protected:
         return err;
     }
 
-    /// accept request / response
+    /// ...socket_dgram_accept
+    virtual int socket_dgram_accept
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->all_socket_recv_request_from(ep, ac, argc, argv, env))) {
+            if (!(err = this->all_socket_process_request_from(ep, ac, argc, argv, env))) {
+            }
+        }
+        return err;
+    }
+    virtual int before_socket_dgram_accept
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_socket_dgram_accept
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_socket_dgram_accept
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_socket_dgram_accept(ep, ac, argc, argv, env))) {
+            int err2 = 0;
+            err = socket_dgram_accept(ep, ac, argc, argv, env);
+            if ((err2 = after_socket_dgram_accept(ep, ac, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...sockets_dgram_accept_run
+    virtual int sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        const xos::network::socket::sockstring_t& host = this->accept_host();
+        const xos::network::socket::sockport_t& port = this->accept_port();
+        xos::network::socket::endpoint& ep = this->accept_ep();
+        xos::network::socket::transport& tp = this->accept_tp();
+        xos::network::socket::interface &ac = this->accept_iface();
+
+        if ((ep.attach(host, port))) {
+
+            if ((ac.open(tp))) {
+
+                if ((ac.bind(ep))) {
+                                       
+                    this->set_accept_done(false);
+                    do {
+                        if ((err = all_socket_dgram_accept(ep, ac, argc, argv, env))) {
+                            this->set_accept_done();
+                        }
+                    } while (!(this->accept_one() || this->accept_done() 
+                               || this->server_restart() || this->server_stop()));
+                }
+                ac.close();
+            }
+            ep.detach();
+        }
+        return err;
+    }
+
+    /// ...socket_recv_request_from
+    virtual int socket_recv_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        ssize_t count = 0;
+        size_t sizeof_accept_chars = 0;
+        char_t& accept_chars = this->accept_chars(sizeof_accept_chars);
+        string_t& accept_request = this->accept_request();
+
+        if (0 < (count = ac.recvfrom(&accept_chars, sizeof_accept_chars-1, ep))) {
+            (&accept_chars)[count] = 0;
+            accept_request.assign(&accept_chars, count);
+        }
+        return err;
+    }
+    /// ...socket_process_request_from
+    virtual int socket_process_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        string_t& accept_request = this->accept_request();
+        err = this->all_socket_process_request_from(accept_request, ep, ac, argc, argv, env);
+        return err;
+    }
+
+    /// accept chars / request / response
+    virtual char_t& accept_chars(size_t& size_of) const {
+        size_of = sizeof(accept_chars_);
+        return (char_t&)accept_chars_[0];
+    }
     virtual string_t& accept_request() const {
         return (string_t&)accept_request_;
     }
@@ -170,6 +261,7 @@ protected:
 
 protected:
     string_t accept_response_, accept_request_;
+    char_t accept_chars_[4096];
 }; /// class maint
 typedef maint<> main;
 

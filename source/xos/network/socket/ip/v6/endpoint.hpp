@@ -29,6 +29,10 @@ namespace socket {
 namespace ip {
 namespace v6 {
 
+/// sockaddr_t
+typedef struct sockaddr_in6 sockaddr_t;
+
+namespace implemented {
 /// class endpointt
 template <class TImplements = socket::ip::endpoint>
 class exported endpointt: virtual public TImplements {
@@ -36,9 +40,116 @@ public:
     typedef TImplements implements;
     typedef endpointt derives; 
     
+    typedef typename implements::attached_t attached_t;
+    typedef typename implements::unattached_t unattached_t;
+    enum { unattached = implements::unattached };
+    
+    typedef typename implements::implements::family_t family_t;
+    enum { family_unspec = implements::implements::family_unspec };
+    
+    typedef typename implements::implements::version_t version_t;
+    enum { version_unspec = implements::implements::version_unspec };
+
     /// constructors / destructor
     virtual ~endpointt() {
     }
+
+    /// family / version
+    virtual family_t family() const {
+        return AF_INET6;
+    }
+    virtual version_t version() const {
+        return 6;
+    }
+}; /// class endpointt
+typedef endpointt<> endpoint;
+} /// namespace implemented
+
+/// class endpointt
+template <class TExtends = ip::extended::endpoint, class TImplements = implemented::endpoint>
+class exported endpointt: virtual public TImplements, public TExtends {
+public:
+    typedef TImplements implements;
+    typedef TExtends extends;
+    typedef endpointt derives;
+
+    typedef typename implements::attached_t attached_t;
+    typedef typename implements::unattached_t unattached_t;
+    enum { unattached = implements::unattached };
+    
+    typedef typename implements::family_t family_t;
+    enum { family_unspec = implements::family_unspec };
+    
+    typedef typename implements::version_t version_t;
+    enum { version_unspec = implements::version_unspec };
+
+    /// constructor / destructor
+    endpointt(const string& host, sockport_t port) {
+        if (!(this->attach(host, port))) {
+            LOGGER_IS_LOGGED_ERROR("...throw attach_exception(attach_failed)...");
+            throw attach_exception(attach_failed);
+        }
+    }
+    endpointt(const char* host, sockport_t port) {
+        if (!(this->attach(host, port))) {
+            LOGGER_IS_LOGGED_ERROR("...throw attach_exception(attach_failed)...");
+            throw attach_exception(attach_failed);
+        }
+    }
+    endpointt(sockport_t port) {
+        if (!(this->attach(port))) {
+            LOGGER_IS_LOGGED_ERROR("...throw attach_exception(attach_failed)...");
+            throw attach_exception(attach_failed);
+        }
+    }
+    endpointt(const endpointt& copy): extends(copy) {
+    }
+    endpointt() {
+    }
+    virtual ~endpointt() {
+        if ((this->attached_to())) {
+            if (!(this->detach())) {
+                LOGGER_IS_LOGGED_ERROR("...throw attach_exception(detach_failed)...");
+                throw attach_exception(detach_failed);
+            }
+        }
+    }
+
+    /// attach
+    using implements::attach;
+    virtual attached_t attach(const attached_t saddr, socklen_t saddrlen, sockport_t port) {
+        if ((saddr) && (saddrlen == (this->socket_address_len()))) {
+            if (this->family() == (saddr->sa_family)) {
+                attached_t attached = 0;
+                if ((attached = this->attach(port))) {
+                    const sockaddr_t& sockaddr = (const sockaddr_t&)(*saddr);
+                    socket_address_.sin6_addr = sockaddr.sin6_addr;
+                }
+                return attached;
+            }
+        }
+        return 0;
+    }
+    virtual attached_t attach(sockport_t port) {
+        memset(&socket_address_, 0, this->socket_address_len_ = (this->socket_address_len()));
+#if defined(BSD)
+        socket_address_.sin6_len = this->socket_address_len_;
+#endif /// defined(BSD)
+        socket_address_.sin6_family = this->family();
+        socket_address_.sin6_addr = in6addr_any;
+        socket_address_.sin6_port = htons(this->socket_address_port_ = port);
+        return extends::attach((attached_t)(&socket_address_));
+    }
+    virtual attached_t recv_socket_address(socklen_t& len) const {
+        len = this->socket_address_len();
+        return ((attached_t)&recv_socket_address_);
+    }
+    virtual socklen_t socket_address_len() const {
+        return ((socklen_t)sizeof(socket_address_));
+    }
+    
+protected:
+    sockaddr_t socket_address_, recv_socket_address_;
 }; /// class endpointt
 typedef endpointt<> endpoint;
 

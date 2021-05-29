@@ -13,23 +13,30 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: transports.cpp
+///   File: main.cpp
 ///
 /// Author: $author$
-///   Date: 5/24/2021
+///   Date: 5/25/2021
 ///////////////////////////////////////////////////////////////////////
-#include "xos/network/socket/ip/v6/transports.hpp"
-#include "xos/network/socket/ip/v6/tcp/transport.cpp"
-#include "xos/network/socket/ip/v6/udp/transport.cpp"
+#include "xos/app/console/network/sockets/main.hpp"
+
+#if !defined(XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_INSTANCE)
+///#define XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_INSTANCE
+#endif /// !defined(XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_NSTANCE)
 
 namespace xos {
+namespace app {
+namespace console {
 namespace network {
-namespace socket {
-namespace ip {
-namespace v6 {
+namespace sockets {
 
-} /// namespace v6
-} /// namespace ip
-} /// namespace socket
+/// class main
+#if defined(XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_INSTANCE)
+static main the_main;
+#endif /// defined(XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_INSTANCE)
+
+} /// namespace sockets
 } /// namespace network
+} /// namespace console
+} /// namespace app
 } /// namespace xos

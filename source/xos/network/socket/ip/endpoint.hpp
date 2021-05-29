@@ -49,6 +49,14 @@ public:
     /// constructors / destructor
     virtual ~endpointt() {
     }
+
+    /// family /  version
+    virtual family_t family() const {
+        return family_unspec;
+    }
+    virtual version_t version() const {
+        return version_unspec;
+    }
 }; /// class endpointt
 typedef endpointt<> endpoint;
 

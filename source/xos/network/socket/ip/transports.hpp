@@ -24,6 +24,7 @@
 #include "xos/network/socket/ip/tcp/transport.hpp"
 #include "xos/network/socket/ip/udp/transport.hpp"
 #include "xos/network/socket/ip/v4/transports.hpp"
+#include "xos/network/socket/ip/v6/transports.hpp"
 
 namespace xos {
 namespace network {

@@ -16,23 +16,21 @@
 ///   File: transport.hpp
 ///
 /// Author: $author$
-///   Date: 5/24/2021
+///   Date: 5/25/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_IP_V6_TCP_TRANSPORT_HPP
-#define XOS_NETWORK_SOCKET_IP_V6_TCP_TRANSPORT_HPP
+#ifndef XOS_NETWORK_SOCKET_IP_V6_TRANSPORT_HPP
+#define XOS_NETWORK_SOCKET_IP_V6_TRANSPORT_HPP
 
-#include "xos/network/socket/ip/tcp/transport.hpp"
-#include "xos/network/socket/ip/v6/transport.hpp"
+#include "xos/network/socket/ip/transport.hpp"
 
 namespace xos {
 namespace network {
 namespace socket {
 namespace ip {
 namespace v6 {
-namespace tcp {
 
 /// class transportt
-template <class TImplements = ip::tcp::transportt<ip::v6::transport> >
+template <class TImplements = ip::transport>
 class exported transportt: virtual public TImplements {
 public:
     typedef TImplements implements;
@@ -50,12 +48,17 @@ public:
     /// constructors / destructor
     virtual ~transportt() {
     }
+
+    /// domain
+    virtual domain_t domain() const {
+        return PF_INET6;
+    }
 }; /// class transportt
 typedef transportt<> transport;
 
 namespace extended {
 /// class transportt
-template <class TExtends = ip::tcp::extended::transport, class TImplements = ip::v6::tcp::transport>
+template <class TExtends = ip::extended::transport, class TImplements = ip::v6::transport>
 class exported transportt: virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
@@ -82,11 +85,10 @@ public:
 typedef transportt<> transport;
 } /// namespace extended
 
-} /// namespace tcp
 } /// namespace v6
 } /// namespace ip
 } /// namespace socket
 } /// namespace network
 } /// namespace xos
 
-#endif /// XOS_NETWORK_SOCKET_IP_V6_TCP_TRANSPORT_HPP
+#endif /// XOS_NETWORK_SOCKET_IP_V6_TRANSPORT_HPP

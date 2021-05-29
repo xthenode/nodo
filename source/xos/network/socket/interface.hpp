@@ -153,6 +153,9 @@ public:
     }
 
     /// send... / recv...
+    virtual ssize_t sendto(const void* buf, size_t len, const endpoint& ep) {
+        return sendto(buf, len, send_flags_default, ep);
+    }
     virtual ssize_t sendto(const void* buf, size_t len, send_flags_t flags, const endpoint& ep) {
         sockaddr_t* addr = 0;
         socklen_t addrlen = 0;
@@ -162,7 +165,10 @@ public:
         }
         return -1;
     }
-    virtual ssize_t recvfrom(void* buf, size_t len, send_flags_t flags, const endpoint& ep) {
+    virtual ssize_t recvfrom(void* buf, size_t len, const endpoint& ep) {
+        return recvfrom(buf, len, recv_flags_default, ep);
+    }
+    virtual ssize_t recvfrom(void* buf, size_t len, recv_flags_t flags, const endpoint& ep) {
         sockaddr_t* addr = 0;
         socklen_t addrlen = 0;
         if ((addr = ep.recv_socket_address(addrlen))) {

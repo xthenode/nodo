@@ -47,6 +47,17 @@ public:
     /// constructors / destructor
     virtual ~transportt() {
     }
+
+    /// domain / type / protocol
+    virtual domain_t domain() const {
+        return domain_unspec;
+    }
+    virtual type_t type() const {
+        return type_unspec;
+    }
+    virtual protocol_t protocol() const {
+        return protocol_unspec;
+    }
 }; /// class transportt
 typedef transportt<> transport;
 

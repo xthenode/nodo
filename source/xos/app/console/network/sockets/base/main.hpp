@@ -417,6 +417,163 @@ protected:
         return err;
     }
 
+    /// ...socket_send_request_to
+    virtual int socket_send_request_to
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_socket_send_request_to
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_socket_send_request_to
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_socket_send_request_to
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_socket_send_request_to(ep, cn, argc, argv, env))) {
+            int err2 = 0;
+            err = socket_send_request_to(ep, cn, argc, argv, env);
+            if ((err2 = after_socket_send_request_to(ep, cn, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int socket_send_request_to
+    (xos::network::socket::endpoint& ep, 
+     xos::network::socket::interface& cn, string_t& request, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t length = 0;
+        const char_t* chars = 0;
+
+        if ((chars = request.has_chars(length))) {
+            cn.sendto(chars, length, ep);
+        }
+        return err;
+    }
+    virtual int before_socket_send_request_to
+    (xos::network::socket::endpoint& ep, 
+     xos::network::socket::interface& cn, string_t& request, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_socket_send_request_to
+    (xos::network::socket::endpoint& ep, 
+     xos::network::socket::interface& cn, string_t& request, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_socket_send_request_to
+    (xos::network::socket::endpoint& ep, 
+     xos::network::socket::interface& cn, string_t& request, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_socket_send_request_to(ep, cn, request, argc, argv, env))) {
+            int err2 = 0;
+            err = socket_send_request_to(ep, cn, request, argc, argv, env);
+            if ((err2 = after_socket_send_request_to(ep, cn, request, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...socket_recv_request_from
+    virtual int socket_recv_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_socket_recv_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_socket_recv_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_socket_recv_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_socket_recv_request_from(ep, ac, argc, argv, env))) {
+            int err2 = 0;
+            err = socket_recv_request_from(ep, ac, argc, argv, env);
+            if ((err2 = after_socket_recv_request_from(ep, ac, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    /// ...socket_process_request_from
+    virtual int socket_process_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_socket_process_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_socket_process_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_socket_process_request_from
+    (xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_socket_process_request_from(ep, ac, argc, argv, env))) {
+            int err2 = 0;
+            err = socket_process_request_from(ep, ac, argc, argv, env);
+            if ((err2 = after_socket_process_request_from(ep, ac, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    /// ...socket_process_request_from
+    virtual int socket_process_request_from
+    (string_t& request, xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        size_t length = 0;
+        const char_t* chars = 0;
+
+        if ((chars = request.has_chars(length))) {
+            this->out(chars, length);
+        }
+        return err;
+    }
+    virtual int before_socket_process_request_from
+    (string_t& request, xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_socket_process_request_from
+    (string_t& request, xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_socket_process_request_from
+    (string_t& request, xos::network::socket::endpoint& ep, xos::network::socket::interface& ac, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_socket_process_request_from(request, ep, ac, argc, argv, env))) {
+            int err2 = 0;
+            err = socket_process_request_from(request, ep, ac, argc, argv, env);
+            if ((err2 = after_socket_process_request_from(request, ep, ac, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
     virtual xos::network::os::sockets& sockets() const {
         return (xos::network::os::sockets&)sockets_;
     }

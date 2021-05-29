@@ -29,6 +29,17 @@
 #include "xos/network/socket/ip/v4/tcp/transport.hpp"
 #include "xos/network/socket/ip/v4/udp/transport.hpp"
 
+#if !defined(NO_IP6_SOCK)
+#include "xos/network/socket/ip/v6/endpoint.hpp"
+#include "xos/network/socket/ip/v6/tcp/transport.hpp"
+#include "xos/network/socket/ip/v6/udp/transport.hpp"
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
+
+#if !defined(NO_IP6_SOCK)
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
+
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_ACCEPT_HOST "*"
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_ACCEPT_PORT 8080
 
@@ -61,13 +72,128 @@
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTARG_RESULT, \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTVAL_C}, \
 
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPT "ip4"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG_RESULT 0
+#if !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG "[{ ip(6) | ip(4) | ...}]"
+#else /// !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG "[{ ip(4) | ...}]"
+#endif /// !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTUSE "Ipv4 Address family"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_S "4::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_C '4'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_C}, \
+
+#if !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPT "ip6"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTARG "[{ ip(4) | ip(6) | ...}]"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTUSE "Ipv6 Address family"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTVAL_S "6::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTVAL_C '6'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTVAL_C}, 
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
+
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPT "family"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG_RESULT 0
+#if !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG "[{ ip(4) | ip(6) | ...}]"
+#else /// !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG "[{ ip(4) | ...}]"
+#endif /// !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTUSE "Address family"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTVAL_S "f::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTVAL_C 'f'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTVAL_C}, \
+
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPT "dgram"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTARG "[{ stream (tcp) | dgram (udp) | ...}]"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTUSE "Datagram transport"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTVAL_S "d::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTVAL_C 'd'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTVAL_C}, \
+
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPT "stream"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTARG "[{ dgram (udp) | stream (tcp) | ...}]"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTUSE "Stream transport"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTVAL_S "s::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTVAL_C 's'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTVAL_C}, \
+
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPT "transport"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTARG "[{ dgram (udp) | stream (tcp) | ...}]"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTUSE "Transport"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTVAL_S "t::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTVAL_C 't'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTVAL_C}, \
+
+#if !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTVAL_S
+
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTION 
+#else /// !defined(NO_IP6_SOCK)
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_S
+
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTION 
+#endif /// !defined(NO_IP6_SOCK)
+
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS_EXTEND \
    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_HOST_OPTVAL_S \
    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTVAL_S \
+   XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_OPTVAL_S \
+   XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_OPTIONS_EXTEND \
    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_HOST_OPTION \
    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTION \
+   XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_OPTION \
+   XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTION \
 
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS \
    XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS_EXTEND \
@@ -453,6 +579,113 @@ protected:
         return err;
     }
 
+    /// ...family_run
+    virtual int family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        xos::network::socket::endpoint& ep = this->ep();
+        
+        this->outlln("ep family = ", signed_to_string(ep.family()).chars(), null);
+        this->outlln("ep version = ", signed_to_string(ep.version()).chars(), null);
+        return err;
+    }
+    virtual int before_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_family_run(argc, argv, env))) {
+            int err2 = 0;
+            err = family_run(argc, argv, env);
+            if ((err2 = after_family_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_family_run;
+        return err;
+    }
+    virtual int before_set_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_family_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_family_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_family_run(argc, argv, env);
+            if ((err2 = after_set_family_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...transport_run
+    virtual int transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        xos::network::socket::transport& tp = this->tp();
+        
+        this->outlln("tp domain = ", signed_to_string(tp.domain()).chars(), null);
+        this->outlln("tp type = ", signed_to_string(tp.type()).chars(), null);
+        this->outlln("tp protocol = ", signed_to_string(tp.protocol()).chars(), null);
+        return err;
+    }
+    virtual int before_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_transport_run(argc, argv, env))) {
+            int err2 = 0;
+            err = transport_run(argc, argv, env);
+            if ((err2 = after_transport_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        run_ = &derives::all_transport_run;
+        return err;
+    }
+    virtual int before_set_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_transport_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_transport_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_transport_run(argc, argv, env);
+            if ((err2 = after_set_transport_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
     /// ...host / ...port
     virtual string_t& set_host(const char_t* chars) {
         const string_t to(chars);
@@ -566,11 +799,35 @@ protected:
         return this->default_ep();
     }
     virtual xos::network::socket::endpoint& default_ep() const {
+        return this->ip_ep();
+    }
+    xos::network::socket::endpoint& (derives::*ip_ep_)() const;
+    virtual xos::network::socket::endpoint& ip_ep() const {
+        if ((this->ip_ep_)) {
+            return (this->*ip_ep_)();
+        }
+        return this->default_ip_ep();
+    }
+    virtual xos::network::socket::endpoint& default_ip_ep() const {
         return this->ip_v4_ep();
+    }
+    virtual xos::network::socket::endpoint& set_ip_v4_ep() {
+        ip_ep_ = &derives::ip_v4_ep;
+        return ip_ep();
     }
     virtual xos::network::socket::endpoint& ip_v4_ep() const {
         return (xos::network::socket::endpoint&)ip_v4_ep_;
     }
+#if !defined(NO_IP6_SOCK)
+    virtual xos::network::socket::endpoint& set_ip_v6_ep() {
+        ip_ep_ = &derives::ip_v6_ep;
+        return ip_ep();
+    }
+    virtual xos::network::socket::endpoint& ip_v6_ep() const {
+        return (xos::network::socket::endpoint&)ip_v6_ep_;
+    }
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
 
     /// ...tp
     xos::network::socket::transport& (derives::*tp_)() const;
@@ -581,14 +838,77 @@ protected:
         return this->default_tp();
     }
     virtual xos::network::socket::transport& default_tp() const {
+        return this->ip_tp();
+    }
+    xos::network::socket::transport& (derives::*ip_tp_)() const;
+    virtual xos::network::socket::transport& set_ip_tcp_tp() {
+        ip_tp_ = &derives::ip_tcp_tp;
+        return ip_tp();
+    }
+    virtual xos::network::socket::transport& set_ip_udp_tp() {
+        ip_tp_ = &derives::ip_udp_tp;
+        return ip_tp();
+    }
+    virtual xos::network::socket::transport& ip_tp() const {
+        if ((this->ip_tp_)) {
+            return (this->*ip_tp_)();
+        }
+        return this->default_ip_tp();
+    }
+    virtual xos::network::socket::transport& default_ip_tp() const {
+        return this->ip_tcp_tp();
+    }
+    xos::network::socket::transport& (derives::*ip_tcp_tp_)() const;
+    virtual xos::network::socket::transport& ip_tcp_tp() const {
+        if ((this->ip_tcp_tp_)) {
+            return (this->*ip_tcp_tp_)();
+        }
+        return this->default_ip_tcp_tp();
+    }
+    virtual xos::network::socket::transport& default_ip_tcp_tp() const {
         return this->ip_v4_tcp_tp();
+    }
+    xos::network::socket::transport& (derives::*ip_udp_tp_)() const;
+    virtual xos::network::socket::transport& ip_udp_tp() const {
+        if ((this->ip_udp_tp_)) {
+            return (this->*ip_udp_tp_)();
+        }
+        return this->default_ip_udp_tp();
+    }
+    virtual xos::network::socket::transport& default_ip_udp_tp() const {
+        return this->ip_v4_udp_tp();
+    }
+    virtual xos::network::socket::transport& set_ip_v4_tcp_tp() {
+        ip_tcp_tp_ = &derives::ip_v4_tcp_tp;
+        return ip_tcp_tp();
     }
     virtual xos::network::socket::transport& ip_v4_tcp_tp() const {
         return (xos::network::socket::transport&)ip_v4_tcp_tp_;
     }
+    virtual xos::network::socket::transport& set_ip_v4_udp_tp() {
+        ip_udp_tp_ = &derives::ip_v4_udp_tp;
+        return ip_udp_tp();
+    }
     virtual xos::network::socket::transport& ip_v4_udp_tp() const {
         return (xos::network::socket::transport&)ip_v4_udp_tp_;
     }
+#if !defined(NO_IP6_SOCK)
+    virtual xos::network::socket::transport& set_ip_v6_tcp_tp() {
+        ip_tcp_tp_ = &derives::ip_v6_tcp_tp;
+        return ip_tcp_tp();
+    }
+    virtual xos::network::socket::transport& ip_v6_tcp_tp() const {
+        return (xos::network::socket::transport&)ip_v6_tcp_tp_;
+    }
+    virtual xos::network::socket::transport& set_ip_v6_udp_tp() {
+        ip_udp_tp_ = &derives::ip_v6_udp_tp;
+        return ip_udp_tp();
+    }
+    virtual xos::network::socket::transport& ip_v6_udp_tp() const {
+        return (xos::network::socket::transport&)ip_v6_udp_tp_;
+    }
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
 
     /// ...option...
     virtual int on_host_option
@@ -623,6 +943,117 @@ protected:
         optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTARG;
         return chars;
     }
+    virtual int on_ip_v4_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            set_ip_v4_ep();
+            set_ip_v4_tcp_tp();
+            set_ip_v4_udp_tp();
+        }
+        return err;
+    }
+    virtual const char_t* ip_v4_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTARG;
+        return chars;
+    }
+#if !defined(NO_IP6_SOCK)
+    virtual int on_ip_v6_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            set_ip_v6_ep();
+            set_ip_v6_tcp_tp();
+            set_ip_v6_udp_tp();
+        }
+        return err;
+    }
+    virtual const char_t* ip_v6_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTARG;
+        return chars;
+    }
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
+    virtual int on_family_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            err = all_set_family_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* family_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTARG;
+        return chars;
+    }
+    virtual int on_dgram_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_dgram_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            set_ip_udp_tp();
+            err = on_dgram_option_set(optval, optarg, optname, optind, argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* dgram_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTARG;
+        return chars;
+    }
+    virtual int on_stream_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_stream_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            set_ip_tcp_tp();
+            err = on_stream_option_set(optval, optarg, optname, optind, argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* stream_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTARG;
+        return chars;
+    }
+    virtual int on_transport_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+            err = all_set_transport_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual const char_t* transport_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTARG;
+        return chars;
+    }
     virtual int on_option
     (int optval, const char_t* optarg, const char_t* optname,
      int optind, int argc, char_t**argv, char_t**env) {
@@ -633,6 +1064,27 @@ protected:
             break;
         case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTVAL_C:
             err = this->on_port_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_C:
+            err = this->on_ip_v4_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+#if !defined(NO_IP6_SOCK)
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTVAL_C:
+            err = this->on_ip_v6_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTVAL_C:
+            err = this->on_family_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTVAL_C:
+            err = this->on_dgram_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTVAL_C:
+            err = this->on_stream_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTVAL_C:
+            err = this->on_transport_option(optval, optarg, optname, optind, argc, argv, env);
             break;
         default:
             err = extends::on_option(optval, optarg, optname, optind, argc, argv, env);
@@ -647,6 +1099,27 @@ protected:
             break;
         case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTVAL_C:
             chars = port_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V4_OPTVAL_C:
+            chars = ip_v4_option_usage(optarg, longopt);
+            break;
+#if !defined(NO_IP6_SOCK)
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_IP_V6_OPTVAL_C:
+            chars = ip_v6_option_usage(optarg, longopt);
+            break;
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_FAMILY_OPTVAL_C:
+            chars = family_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_DGRAM_OPTVAL_C:
+            chars = dgram_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_STREAM_OPTVAL_C:
+            chars = stream_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_TRANSPORT_OPTVAL_C:
+            chars = transport_option_usage(optarg, longopt);
             break;
         default:
             chars = extends::option_usage(optarg, longopt);
@@ -685,6 +1158,13 @@ protected:
     xos::network::socket::ip::v4::endpoint ip_v4_ep_;
     xos::network::socket::ip::v4::tcp::transport ip_v4_tcp_tp_;
     xos::network::socket::ip::v4::udp::transport ip_v4_udp_tp_;
+
+#if !defined(NO_IP6_SOCK)
+    xos::network::socket::ip::v6::endpoint ip_v6_ep_;
+    xos::network::socket::ip::v6::tcp::transport ip_v6_tcp_tp_;
+    xos::network::socket::ip::v6::udp::transport ip_v6_udp_tp_;
+#else /// !defined(NO_IP6_SOCK)
+#endif /// !defined(NO_IP6_SOCK)
 }; /// class main_optt
 typedef main_optt<> main_opt;
 

@@ -30,6 +30,12 @@
 #endif /// !defined(BSD) || defined(WINSOCK_2)
 #endif /// !defined(BSDSOCK)
 
+#if !defined(NO_IP6_SOCK)
+#if defined(WINSOCK_1)
+#define NO_IP6_SOCK
+#endif /// defined(WINSOCK_1)
+#endif /// !defined(NO_IP6_SOCK)
+
 namespace xos {
 namespace network {
 namespace socket {
@@ -63,15 +69,23 @@ public:
     typedef TImplements implements;
     typedef addresst derives; 
     
-    /// constructors / destructor
-    virtual ~addresst() {
-    }
-
     typedef typename implements::family_t family_t;
     enum { family_unspec = AF_UNSPEC };
     
     typedef typename implements::version_t version_t;
     enum { version_unspec = 0 };
+
+    /// constructors / destructor
+    virtual ~addresst() {
+    }
+
+    /// family /  version
+    virtual family_t family() const {
+        return family_unspec;
+    }
+    virtual version_t version() const {
+        return version_unspec;
+    }
 }; /// class addresst
 typedef addresst<> address;
 

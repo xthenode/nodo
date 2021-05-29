@@ -96,7 +96,9 @@ public:
 
     /// constructor / destructor
     main_optt()
-    : sockets_accept_run_(0),
+    : sockets_server_run_(0), 
+      sockets_stream_accept_run_(0),
+      sockets_dgram_accept_run_(0),
       accept_one_(false), accept_done_(false), 
       server_restart_(false), server_stop_(false) {
     }
@@ -112,13 +114,30 @@ protected:
     typedef typename extends::out_writer_t out_writer_t;
     typedef typename extends::err_writer_t err_writer_t;
 
-    /// ...sockets_server..._run
+    /// ...sockets_server_run
+    int (derives::*sockets_server_run_)(int argc, char_t** argv, char_t** env);
     virtual int sockets_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if ((sockets_server_run_)) {
+            err = (this->*sockets_server_run_)(argc, argv, env);
+        } else {
+            err = default_sockets_server_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_sockets_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_sockets_stream_server_run(argc, argv, env);
+        return err;
+    }
+
+    /// ...sockets_stream_server_run
+    virtual int sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         bool server_restart = false;
 
         do {
-            if (!(err = sockets_server_accept_run(argc, argv, env))) {
+            if (!(err = all_sockets_stream_server_accept_run(argc, argv, env))) {
                 if (!(accept_one())) {
                     server_restart = this->server_restart();
                 }
@@ -127,99 +146,412 @@ protected:
         } while (server_restart);
         return err;
     }
-    int (derives::*sockets_accept_run_)(int argc, char_t** argv, char_t** env);
-    virtual int sockets_server_accept_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if ((sockets_accept_run_)) {
-            err = (this->*sockets_accept_run_)(argc, argv, env);
-        } else {
-            err = sockets_accept_run(argc, argv, env);
-        }
         return err;
     }
-    
-    /// ...sockets_accept_one_run
-    virtual int sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        err = all_sockets_accept_run(argc, argv, env);
         return err;
     }
-    virtual int before_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        set_accept_one();
-        return err;
-    }
-    virtual int after_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        set_accept_one(false);
-        return err;
-    }
-    virtual int all_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
-        int err = 0;
-        if (!(err = before_sockets_accept_one_run(argc, argv, env))) {
+        if (!(err = before_sockets_stream_server_run(argc, argv, env))) {
             int err2 = 0;
-            err = sockets_accept_one_run(argc, argv, env);
-            if ((err2 = after_sockets_accept_one_run(argc, argv, env))) {
+            err = sockets_stream_server_run(argc, argv, env);
+            if ((err2 = after_sockets_stream_server_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
-    virtual int set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+    virtual int set_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = this->set_sockets_server_run(argc, argv, env))) {
-            sockets_accept_run_ = &derives::all_sockets_accept_one_run;
+        sockets_server_run_ = &derives::all_sockets_stream_server_run;
+        return err;
+    }
+    virtual int before_set_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_stream_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_stream_server_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_stream_server_run(argc, argv, env);
+            if ((err2 = after_set_sockets_stream_server_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
         }
         return err;
     }
-    virtual int before_set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+    virtual int on_stream_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_set_sockets_stream_server_run(argc, argv, env);
+        return err;
+    }
+
+    int (derives::*sockets_stream_accept_run_)(int argc, char_t** argv, char_t** env);
+    virtual int sockets_stream_server_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if ((sockets_stream_accept_run_)) {
+            err = (this->*sockets_stream_accept_run_)(argc, argv, env);
+        } else {
+            err = default_sockets_stream_accept_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_sockets_stream_accept_run(argc, argv, env);
+        return err;
+    }
+    virtual int before_sockets_stream_server_accept_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int after_set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_sockets_stream_server_accept_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         return err;
     }
-    virtual int all_set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_sockets_stream_server_accept_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_set_sockets_accept_one_run(argc, argv, env))) {
+        if (!(err = before_sockets_stream_server_accept_run(argc, argv, env))) {
             int err2 = 0;
-            err = set_sockets_accept_one_run(argc, argv, env);
-            if ((err2 = after_set_sockets_accept_one_run(argc, argv, env))) {
+            err = sockets_stream_server_accept_run(argc, argv, env);
+            if ((err2 = after_sockets_stream_server_accept_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    
+    /// ...sockets_stream_accept_run
+    virtual int sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_stream_accept_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_stream_accept_run(argc, argv, env);
+            if ((err2 = after_sockets_stream_accept_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->set_sockets_server_run(argc, argv, env))) {
+            sockets_stream_accept_run_ = &derives::all_sockets_stream_accept_run;
+        }
+        return err;
+    }
+    virtual int before_set_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_stream_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_stream_accept_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_stream_accept_run(argc, argv, env);
+            if ((err2 = after_set_sockets_stream_accept_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
 
-    /// ...sockets_accept_run
-    virtual int sockets_accept_run(int argc, char_t** argv, char_t** env) {
+    /// ...sockets_stream_accept_one_run
+    virtual int sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
+        err = all_sockets_stream_accept_run(argc, argv, env);
         return err;
     }
-    virtual int before_sockets_accept_run(int argc, char_t** argv, char_t** env) {
+    virtual int before_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
+        set_accept_one();
         return err;
     }
-    virtual int after_sockets_accept_run(int argc, char_t** argv, char_t** env) {
+    virtual int after_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
+        set_accept_one(false);
         return err;
     }
-    virtual int all_sockets_accept_run(int argc, char_t** argv, char_t** env) {
+    virtual int all_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = before_sockets_accept_run(argc, argv, env))) {
+        if (!(err = before_sockets_stream_accept_one_run(argc, argv, env))) {
             int err2 = 0;
-            err = sockets_accept_run(argc, argv, env);
-            if ((err2 = after_sockets_accept_run(argc, argv, env))) {
+            err = sockets_stream_accept_one_run(argc, argv, env);
+            if ((err2 = after_sockets_stream_accept_one_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
         return err;
     }
-    virtual int set_sockets_accept_run(int argc, char_t** argv, char_t** env) {
+    virtual int set_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
         if (!(err = this->set_sockets_server_run(argc, argv, env))) {
-            sockets_accept_run_ = &derives::all_sockets_accept_run;
+            sockets_stream_accept_run_ = &derives::all_sockets_stream_accept_one_run;
+        }
+        return err;
+    }
+    virtual int before_set_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_stream_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_stream_accept_one_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_stream_accept_one_run(argc, argv, env);
+            if ((err2 = after_set_sockets_stream_accept_one_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...sockets_dgram_server_run
+    virtual int sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        bool server_restart = false;
+
+        do {
+            if (!(err = all_sockets_dgram_server_accept_run(argc, argv, env))) {
+                if (!(accept_one())) {
+                    server_restart = this->server_restart();
+                }
+                set_server_restart(false);
+            }
+        } while (server_restart);
+        return err;
+    }
+    virtual int before_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_dgram_server_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_dgram_server_run(argc, argv, env);
+            if ((err2 = after_sockets_dgram_server_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        sockets_server_run_ = &derives::all_sockets_dgram_server_run;
+        return err;
+    }
+    virtual int before_set_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_dgram_server_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_dgram_server_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_dgram_server_run(argc, argv, env);
+            if ((err2 = after_set_sockets_dgram_server_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int on_dgram_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_set_sockets_dgram_server_run(argc, argv, env);
+        return err;
+    }
+
+    /// ...sockets_dgram_server_accept_run
+    int (derives::*sockets_dgram_accept_run_)(int argc, char_t** argv, char_t** env);
+    virtual int sockets_dgram_server_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if ((sockets_dgram_accept_run_)) {
+            err = (this->*sockets_dgram_accept_run_)(argc, argv, env);
+        } else {
+            err = default_sockets_dgram_accept_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_sockets_dgram_accept_run(argc, argv, env);
+        return err;
+    }
+    virtual int before_sockets_dgram_server_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_dgram_server_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_dgram_server_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_dgram_server_accept_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_dgram_server_accept_run(argc, argv, env);
+            if ((err2 = after_sockets_dgram_server_accept_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...sockets_dgram_accept_run
+    virtual int sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_dgram_accept_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_dgram_accept_run(argc, argv, env);
+            if ((err2 = after_sockets_dgram_accept_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->set_sockets_server_run(argc, argv, env))) {
+            sockets_dgram_accept_run_ = &derives::all_sockets_dgram_accept_run;
+        }
+        return err;
+    }
+    virtual int before_set_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_dgram_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_dgram_accept_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_dgram_accept_run(argc, argv, env);
+            if ((err2 = after_set_sockets_dgram_accept_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...sockets_dgram_accept_one_run
+    virtual int sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_sockets_dgram_accept_run(argc, argv, env);
+        return err;
+    }
+    virtual int before_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        set_accept_one();
+        return err;
+    }
+    virtual int after_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        set_accept_one(false);
+        return err;
+    }
+    virtual int all_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_dgram_accept_one_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_dgram_accept_one_run(argc, argv, env);
+            if ((err2 = after_sockets_dgram_accept_one_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->set_sockets_server_run(argc, argv, env))) {
+            sockets_dgram_accept_run_ = &derives::all_sockets_dgram_accept_one_run;
+        }
+        return err;
+    }
+    virtual int before_set_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_dgram_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_dgram_accept_one_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_dgram_accept_one_run(argc, argv, env);
+            if ((err2 = after_set_sockets_dgram_accept_one_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+
+    /// ...set_sockets_accept_...run
+    virtual int set_sockets_accept_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->all_set_sockets_server_run(argc, argv, env))) {
+            if (!(err = all_set_sockets_stream_accept_run(argc, argv, env))) {
+                if (!(err = all_set_sockets_dgram_accept_run(argc, argv, env))) {
+                }
+            }
         }
         return err;
     }
@@ -237,6 +569,35 @@ protected:
             int err2 = 0;
             err = set_sockets_accept_run(argc, argv, env);
             if ((err2 = after_set_sockets_accept_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->all_set_sockets_server_run(argc, argv, env))) {
+            if (!(err = all_set_sockets_stream_accept_one_run(argc, argv, env))) {
+                if (!(err = all_set_sockets_dgram_accept_one_run(argc, argv, env))) {
+                }
+            }
+        }
+        return err;
+    }
+    virtual int before_set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_accept_one_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_accept_one_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_accept_one_run(argc, argv, env);
+            if ((err2 = after_set_sockets_accept_one_run(argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
@@ -294,10 +655,10 @@ protected:
         return this->default_accept_ep();
     }
     virtual xos::network::socket::endpoint& default_accept_ep() const {
-        return this->accept_ip_v4_ep();
+        return this->accept_ip_ep();
     }
-    virtual xos::network::socket::endpoint& accept_ip_v4_ep() const {
-        return this->ip_v4_ep();
+    virtual xos::network::socket::endpoint& accept_ip_ep() const {
+        return this->ip_ep();
     }
 
     /// ...tp
@@ -309,10 +670,10 @@ protected:
         return this->default_accept_tp();
     }
     virtual xos::network::socket::transport& default_accept_tp() const {
-        return this->accept_ip_v4_tcp_tp();
+        return this->accept_ip_tp();
     }
-    virtual xos::network::socket::transport& accept_ip_v4_tcp_tp() const {
-        return this->ip_v4_tcp_tp();
+    virtual xos::network::socket::transport& accept_ip_tp() const {
+        return this->ip_tp();
     }
 
     /// ...option...

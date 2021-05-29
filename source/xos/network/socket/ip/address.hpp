@@ -44,6 +44,14 @@ public:
     /// constructors / destructor
     virtual ~addresst() {
     }
+
+    /// family /  version
+    virtual family_t family() const {
+        return family_unspec;
+    }
+    virtual version_t version() const {
+        return version_unspec;
+    }
 }; /// class addresst
 typedef addresst<> address;
 

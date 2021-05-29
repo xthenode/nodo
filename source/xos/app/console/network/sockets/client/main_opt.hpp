@@ -80,7 +80,7 @@ public:
     typedef typename extends::file_t file_t;
 
     /// constructor / destructor
-    main_optt() {
+    main_optt(): sockets_client_run_(0) {
     }
     virtual ~main_optt() {
     }
@@ -93,6 +93,135 @@ protected:
     typedef typename extends::in_reader_t in_reader_t;
     typedef typename extends::out_writer_t out_writer_t;
     typedef typename extends::err_writer_t err_writer_t;
+
+    /// ...sockets_client_run
+    int (derives::*sockets_client_run_)(int argc, char_t** argv, char_t** env);
+    virtual int sockets_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if ((sockets_client_run_)) {
+            err = (this->*sockets_client_run_)(argc, argv, env);
+        } else {
+            err = default_sockets_client_run(argc, argv, env);
+        }
+        return err;
+    }
+    virtual int default_sockets_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = sockets_stream_client_run(argc, argv, env);
+        return err;
+    }
+    
+    /// ...sockets_stream_client_run
+    virtual int sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_stream_client_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_stream_client_run(argc, argv, env);
+            if ((err2 = after_sockets_stream_client_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        sockets_client_run_ = &derives::all_sockets_stream_client_run;
+        return err;
+    }
+    virtual int before_set_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_stream_client_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_stream_client_run(argc, argv, env);
+            if ((err2 = after_set_sockets_stream_client_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int on_stream_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_set_sockets_stream_client_run(argc, argv, env);
+        return err;
+    }
+
+    /// ...sockets_dgram_client_run
+    virtual int sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_dgram_client_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_dgram_client_run(argc, argv, env);
+            if ((err2 = after_sockets_dgram_client_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        sockets_client_run_ = &derives::all_sockets_dgram_client_run;
+        return err;
+    }
+    virtual int before_set_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_dgram_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_dgram_client_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_dgram_client_run(argc, argv, env);
+            if ((err2 = after_set_sockets_dgram_client_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int on_dgram_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_set_sockets_dgram_client_run(argc, argv, env);
+        return err;
+    }
 
     /// ...host / ...port
     virtual string_t& host() const {
@@ -113,10 +242,10 @@ protected:
         return this->default_connect_ep();
     }
     virtual xos::network::socket::endpoint& default_connect_ep() const {
-        return this->connect_ip_v4_ep();
+        return this->connect_ip_ep();
     }
-    virtual xos::network::socket::endpoint& connect_ip_v4_ep() const {
-        return this->ip_v4_ep();
+    virtual xos::network::socket::endpoint& connect_ip_ep() const {
+        return this->ip_ep();
     }
 
     /// ...tp
@@ -128,10 +257,10 @@ protected:
         return this->default_connect_tp();
     }
     virtual xos::network::socket::transport& default_connect_tp() const {
-        return this->connect_ip_v4_tcp_tp();
+        return this->connect_ip_tp();
     }
-    virtual xos::network::socket::transport& connect_ip_v4_tcp_tp() const {
-        return this->ip_v4_tcp_tp();
+    virtual xos::network::socket::transport& connect_ip_tp() const {
+        return this->ip_tp();
     }
 
     /// ...option...
