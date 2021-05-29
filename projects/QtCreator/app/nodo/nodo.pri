@@ -38,7 +38,7 @@ $${nodo_INCLUDEPATH} \
 nodo_exe_DEFINES += \
 $${nodo_DEFINES} \
 DEFAULT_LOGGING_LEVELS_ERROR \
-XOS_APP_CONSOLE_NETWORK_SOCKETS_SERVER_MAIN_INSTANCE \
+XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_INSTANCE \
 
 ########################################################################
 # nodo_exe OBJECTIVE_HEADERS
@@ -85,6 +85,10 @@ $${NODO_SRC}/xos/network/socket/ip/v4/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/tcp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/udp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/transports.hpp \
+$${NODO_SRC}/xos/network/socket/ip/v6/transport.hpp \
+$${NODO_SRC}/xos/network/socket/ip/v6/tcp/transport.hpp \
+$${NODO_SRC}/xos/network/socket/ip/v6/udp/transport.hpp \
+$${NODO_SRC}/xos/network/socket/ip/v6/transports.hpp \
 $${NODO_SRC}/xos/network/socket/ip/transports.hpp \
 $${NODO_SRC}/xos/network/socket/transports.hpp \
 \
@@ -111,6 +115,8 @@ $${NODO_SRC}/xos/app/console/network/sockets/client/main_opt.hpp \
 $${NODO_SRC}/xos/app/console/network/sockets/client/main.hpp \
 $${NODO_SRC}/xos/app/console/network/sockets/server/main_opt.hpp \
 $${NODO_SRC}/xos/app/console/network/sockets/server/main.hpp \
+$${NODO_SRC}/xos/app/console/network/sockets/main_opt.hpp \
+$${NODO_SRC}/xos/app/console/network/sockets/main.hpp \
 \
 $${NODO_SRC}/xos/app/console/main_main.hpp \
 
@@ -125,8 +131,8 @@ $${NODO_SRC}/xos/network/socket/endpoints.cpp \
 $${NODO_SRC}/xos/network/socket/transports.cpp \
 $${NODO_SRC}/xos/network/socket/interfaces.cpp \
 \
-$${NODO_SRC}/xos/app/console/network/sockets/server/main_opt.cpp \
-$${NODO_SRC}/xos/app/console/network/sockets/server/main.cpp \
+$${NODO_SRC}/xos/app/console/network/sockets/main_opt.cpp \
+$${NODO_SRC}/xos/app/console/network/sockets/main.cpp \
 \
 $${NODO_SRC}/xos/app/console/main_main.cpp \
 
