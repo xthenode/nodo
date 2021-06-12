@@ -55,6 +55,9 @@ XOS_APP_CONSOLE_NETWORK_SOCKETS_MAIN_INSTANCE \
 # nodo_exe HEADERS
 #
 nodo_exe_HEADERS += \
+$${NODO_SRC}/xos/network/address.hpp \
+$${NODO_SRC}/xos/network/transport.hpp \
+$${NODO_SRC}/xos/network/endpoint.hpp \
 $${NODO_SRC}/xos/network/interface.hpp \
 $${NODO_SRC}/xos/network/os/os.hpp \
 $${NODO_SRC}/xos/network/sockets.hpp \
@@ -65,6 +68,13 @@ $${NODO_SRC}/xos/network/socket/address.hpp \
 $${NODO_SRC}/xos/network/socket/endpoint.hpp \
 $${NODO_SRC}/xos/network/socket/transport.hpp \
 $${NODO_SRC}/xos/network/socket/interface.hpp \
+\
+$${NODO_SRC}/xos/network/socket/local/address.hpp \
+$${NODO_SRC}/xos/network/socket/local/endpoint.hpp \
+$${NODO_SRC}/xos/network/socket/local/transport.hpp \
+$${NODO_SRC}/xos/network/socket/local/dgram/transport.hpp \
+$${NODO_SRC}/xos/network/socket/local/stream/transport.hpp \
+$${NODO_SRC}/xos/network/socket/local/transports.hpp \
 \
 $${NODO_SRC}/xos/network/socket/ip/address.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/address.hpp \
@@ -79,13 +89,16 @@ $${NODO_SRC}/xos/network/socket/ip/endpoints.hpp \
 $${NODO_SRC}/xos/network/socket/endpoints.hpp \
 \
 $${NODO_SRC}/xos/network/socket/ip/transport.hpp \
+$${NODO_SRC}/xos/network/socket/ip/raw/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/tcp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/udp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/transport.hpp \
+$${NODO_SRC}/xos/network/socket/ip/v4/raw/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/tcp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/udp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v4/transports.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v6/transport.hpp \
+$${NODO_SRC}/xos/network/socket/ip/v6/raw/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v6/tcp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v6/udp/transport.hpp \
 $${NODO_SRC}/xos/network/socket/ip/v6/transports.hpp \
