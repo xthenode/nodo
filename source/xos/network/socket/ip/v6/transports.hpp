@@ -21,6 +21,7 @@
 #ifndef XOS_NETWORK_SOCKET_IP_V6_TRANSPORTS_HPP
 #define XOS_NETWORK_SOCKET_IP_V6_TRANSPORTS_HPP
 
+#include "xos/network/socket/ip/v6/raw/transport.hpp"
 #include "xos/network/socket/ip/v6/tcp/transport.hpp"
 #include "xos/network/socket/ip/v6/udp/transport.hpp"
 

@@ -16,65 +16,37 @@
 ///   File: address.hpp
 ///
 /// Author: $author$
-///   Date: 5/22/2021
+///   Date: 6/11/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_ADDRESS_HPP
-#define XOS_NETWORK_SOCKET_ADDRESS_HPP
+#ifndef XOS_NETWORK_ADDRESS_HPP
+#define XOS_NETWORK_ADDRESS_HPP
 
-#include "xos/network/address.hpp"
-#include "xos/base/string.hpp"
-#include <sys/socket.h>
-
-#if !defined(BSDSOCK)
-#if defined(BSD) || defined(WINSOCK_2)
-#define BSDSOCK
-#endif /// !defined(BSD) || defined(WINSOCK_2)
-#endif /// !defined(BSDSOCK)
-
-#if !defined(NO_IP6_SOCK)
-#if defined(WINSOCK_1)
-#define NO_IP6_SOCK
-#endif /// defined(WINSOCK_1)
-#endif /// !defined(NO_IP6_SOCK)
+#include "xos/base/logged.hpp"
 
 namespace xos {
 namespace network {
-namespace socket {
 
-/// enum addrindex_t
-typedef int addrindex_t;
-enum {
-    first_addrindex = 0,
-    last_addrindex = -1
-}; /// enum addrindex_t
+typedef int address_family_t;
+enum { address_family_unspec = 0 };
 
-/// struct sockaddr
-typedef struct sockaddr sockaddr_t;
-
-/// socklen_t
-typedef ::socklen_t socklen_t;
-
-/// sockport_t
-typedef unsigned short sockport_t;
-
-/// sockstring_t
-typedef string sockstring_t;
-
-/// sockchar_t
-typedef sockstring_t::char_t sockchar_t;
+typedef int address_version_t;
+enum { address_version_unspec = 0 };
 
 /// class addresst
-template <class TImplements = network::address>
+template 
+<typename TFamily = address_family_t, TFamily VFamilyUnspec = address_family_unspec,
+ typename TVersion = address_version_t, TVersion VVersionUnspec = address_version_unspec,
+ class TImplements = logged>
 class exported addresst: virtual public TImplements {
 public:
     typedef TImplements implements;
     typedef addresst derives; 
     
-    typedef typename implements::family_t family_t;
-    enum { family_unspec = AF_UNSPEC };
+    typedef TFamily family_t;
+    enum { family_unspec = VFamilyUnspec };
     
-    typedef typename implements::version_t version_t;
-    enum { version_unspec = 0 };
+    typedef TVersion version_t;
+    enum { version_unspec = VVersionUnspec };
 
     /// constructors / destructor
     virtual ~addresst() {
@@ -93,7 +65,7 @@ typedef addresst<> address;
 namespace extended {
 /// class addresst
 template 
-<class TExtends = network::extended::address, class TImplements = socket::address>
+<class TExtends = xos::extended::logged, class TImplements = network::address>
 
 class exported addresst: virtual public TImplements, public TExtends {
 public:
@@ -118,8 +90,7 @@ public:
 typedef addresst<> address;
 } /// namespace extended
 
-} /// namespace socket
 } /// namespace network
 } /// namespace xos
 
-#endif /// XOS_NETWORK_SOCKET_ADDRESS_HPP
+#endif /// XOS_NETWORK_ADDRESS_HPP

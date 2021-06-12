@@ -22,6 +22,7 @@
 #define XOS_NETWORK_SOCKET_TRANSPORTS_HPP
 
 #include "xos/network/socket/ip/transports.hpp"
+#include "xos/network/socket/local/transports.hpp"
 
 namespace xos {
 namespace network {

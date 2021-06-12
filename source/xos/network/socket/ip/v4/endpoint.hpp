@@ -149,6 +149,18 @@ public:
         return ((socklen_t)sizeof(socket_address_));
     }
     
+    /// ...address_bytes...
+    virtual byte_t* address_bytes(size_t& length) const {
+        byte_t* bytes = (byte_t*)&socket_address_.sin_addr.s_addr;
+        length = sizeof(socket_address_.sin_addr.s_addr);
+        return bytes;
+    }
+    virtual byte_t* recv_address_bytes(size_t& length) const {
+        byte_t* bytes = (byte_t*)&recv_socket_address_.sin_addr.s_addr;
+        length = sizeof(recv_socket_address_.sin_addr.s_addr);
+        return bytes;
+    }
+
 protected:
     sockaddr_t socket_address_, recv_socket_address_;
 }; /// class endpointt

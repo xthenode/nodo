@@ -22,6 +22,7 @@
 #define XOS_NETWORK_SOCKET_ADDRESSES_HPP
 
 #include "xos/network/socket/ip/addresses.hpp"
+#include "xos/network/socket/local/address.hpp"
 
 namespace xos {
 namespace network {

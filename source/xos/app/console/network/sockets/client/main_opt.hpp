@@ -111,6 +111,62 @@ protected:
         return err;
     }
     
+    /// ...sockets_raw_client_run
+    virtual int sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_sockets_raw_client_run(argc, argv, env))) {
+            int err2 = 0;
+            err = sockets_raw_client_run(argc, argv, env);
+            if ((err2 = after_sockets_raw_client_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int set_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        sockets_client_run_ = &derives::all_sockets_raw_client_run;
+        return err;
+    }
+    virtual int before_set_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_set_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_set_sockets_raw_client_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_set_sockets_raw_client_run(argc, argv, env))) {
+            int err2 = 0;
+            err = set_sockets_raw_client_run(argc, argv, env);
+            if ((err2 = after_set_sockets_raw_client_run(argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    virtual int on_raw_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        err = all_set_sockets_raw_client_run(argc, argv, env);
+        return err;
+    }
+
     /// ...sockets_stream_client_run
     virtual int sockets_stream_client_run(int argc, char_t** argv, char_t** env) {
         int err = 0;

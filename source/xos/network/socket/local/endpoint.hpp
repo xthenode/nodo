@@ -16,25 +16,24 @@
 ///   File: endpoint.hpp
 ///
 /// Author: $author$
-///   Date: 5/23/2021
+///   Date: 6/12/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_IP_V6_ENDPOINT_HPP
-#define XOS_NETWORK_SOCKET_IP_V6_ENDPOINT_HPP
+#ifndef XOS_NETWORK_SOCKET_LOCAL_ENDPOINT_HPP
+#define XOS_NETWORK_SOCKET_LOCAL_ENDPOINT_HPP
 
-#include "xos/network/socket/ip/endpoint.hpp"
+#include "xos/network/socket/local/address.hpp"
+#include "xos/network/socket/endpoint.hpp"
 
 namespace xos {
 namespace network {
 namespace socket {
-namespace ip {
-namespace v6 {
+namespace local {
 
 /// sockaddr_t
-typedef struct sockaddr_in6 sockaddr_t;
+typedef struct sockaddr_un sockaddr_t;
 
-namespace implemented {
 /// class endpointt
-template <class TImplements = socket::ip::endpoint>
+template <class TImplements = network::socket::endpoint>
 class exported endpointt: virtual public TImplements {
 public:
     typedef TImplements implements;
@@ -54,19 +53,19 @@ public:
     virtual ~endpointt() {
     }
 
-    /// family / version
+    /// family /  version
     virtual family_t family() const {
-        return AF_INET6;
+        return AF_LOCAL;
     }
     virtual version_t version() const {
-        return 6;
+        return 0;
     }
 }; /// class endpointt
 typedef endpointt<> endpoint;
-} /// namespace implemented
 
+namespace extended {
 /// class endpointt
-template <class TExtends = ip::extended::endpoint, class TImplements = implemented::endpoint>
+template <class TExtends = socket::extended::endpoint, class TImplements = socket::local::endpoint>
 class exported endpointt: virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
@@ -84,20 +83,14 @@ public:
     enum { version_unspec = implements::version_unspec };
 
     /// constructor / destructor
-    endpointt(const string& host, sockport_t port) {
-        if (!(this->attach(host, port))) {
+    endpointt(const string& path) {
+        if (!(this->attach(path))) {
             LOGGER_IS_LOGGED_ERROR("...throw attach_exception(attach_failed)...");
             throw attach_exception(attach_failed);
         }
     }
-    endpointt(const char* host, sockport_t port) {
-        if (!(this->attach(host, port))) {
-            LOGGER_IS_LOGGED_ERROR("...throw attach_exception(attach_failed)...");
-            throw attach_exception(attach_failed);
-        }
-    }
-    endpointt(sockport_t port) {
-        if (!(this->attach(port))) {
+    endpointt(const char* path) {
+        if (!(this->attach(path))) {
             LOGGER_IS_LOGGED_ERROR("...throw attach_exception(attach_failed)...");
             throw attach_exception(attach_failed);
         }
@@ -117,58 +110,72 @@ public:
 
     /// attach
     using implements::attach;
-    virtual attached_t attach(const attached_t saddr, socklen_t saddrlen, sockport_t port) {
+    virtual attached_t attach(const attached_t saddr, socklen_t saddrlen) {
         if ((saddr) && (saddrlen == (this->socket_address_len()))) {
             if (this->family() == (saddr->sa_family)) {
-                attached_t attached = 0;
-                if ((attached = this->attach(port))) {
-                    const sockaddr_t& sockaddr = (const sockaddr_t&)(*saddr);
-                    socket_address_.sin6_addr = sockaddr.sin6_addr;
-                }
-                return attached;
+            } else {
             }
+        } else {
         }
         return 0;
     }
-    virtual attached_t attach(sockport_t port) {
-        memset(&socket_address_, 0, this->socket_address_len_ = (this->socket_address_len()));
-#if defined(BSD)
-        socket_address_.sin6_len = this->socket_address_len_;
-#endif /// defined(BSD)
-        socket_address_.sin6_family = this->family();
-        socket_address_.sin6_addr = in6addr_any;
-        socket_address_.sin6_port = htons(this->socket_address_port_ = port);
-        return extends::attach((attached_t)(&socket_address_));
+    virtual attached_t attach(const string& path) {
+        const char* chars = 0;
+        if ((chars = path.has_chars())) {
+            attached_t attached = attach(chars);
+            return attached;
+        } else {
+        }
+        return 0;
     }
-    virtual attached_t recv_socket_address(socklen_t& len) const {
-        len = this->socket_address_len();
-        return ((attached_t)&recv_socket_address_);
+    virtual attached_t attach(const char* path) {
+        if ((path) && (path[0])) {
+            memset(&socket_address_, 0, this->socket_address_len_ = (this->socket_address_len()));
+#if defined(BSDSOCK)
+            socket_address_.sun_len = this->socket_address_len_;
+#endif /// defined(BSDSOCK)
+            socket_address_.sun_family = this->family();
+            if (0 < (strncpy(socket_address_.sun_path, path, sizeof(socket_address_.sun_path)-1))) {
+                return extends::attach((attached_t)(&socket_address_));
+            }
+        } else {
+        }
+        return 0;
     }
+
+    /// ...address...
     virtual socklen_t socket_address_len() const {
         return ((socklen_t)sizeof(socket_address_));
     }
-    
-    /// ...address_bytes...
     virtual byte_t* address_bytes(size_t& length) const {
-        byte_t* bytes = (byte_t*)&socket_address_.sin6_addr.s6_addr;
-        length = sizeof(socket_address_.sin6_addr.s6_addr);
+        byte_t* bytes = (byte_t*)&socket_address_.sun_path;
+        length = address_length(bytes, sizeof(socket_address_.sun_path));
         return bytes;
     }
     virtual byte_t* recv_address_bytes(size_t& length) const {
-        byte_t* bytes = (byte_t*)&recv_socket_address_.sin6_addr.s6_addr;
-        length = sizeof(recv_socket_address_.sin6_addr.s6_addr);
+        byte_t* bytes = (byte_t*)&recv_socket_address_.sun_path;
+        length = address_length(bytes, sizeof(recv_socket_address_.sun_path));
         return bytes;
+    }
+    
+protected:
+    virtual socklen_t address_length(const byte_t* bytes, size_t size) const {
+        const char* chars = 0;
+        if ((chars = ((const char*)bytes)) && (chars[0])) {
+            return strnlen(chars, size);
+        }
+        return 0;
     }
 
 protected:
     sockaddr_t socket_address_, recv_socket_address_;
 }; /// class endpointt
 typedef endpointt<> endpoint;
+} /// namespace extended
 
-} /// namespace v6
-} /// namespace ip
+} /// namespace local
 } /// namespace socket
 } /// namespace network
 } /// namespace xos
 
-#endif /// XOS_NETWORK_SOCKET_IP_V6_ENDPOINT_HPP
+#endif /// XOS_NETWORK_SOCKET_LOCAL_ENDPOINT_HPP

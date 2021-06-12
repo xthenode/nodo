@@ -13,23 +13,53 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: endpoints.hpp
+///   File: transport.hpp
 ///
 /// Author: $author$
-///   Date: 5/22/2021
+///   Date: 6/11/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_ENDPOINTS_HPP
-#define XOS_NETWORK_SOCKET_ENDPOINTS_HPP
+#ifndef XOS_NETWORK_SOCKET_LOCAL_STREAM_TRANSPORT_HPP
+#define XOS_NETWORK_SOCKET_LOCAL_STREAM_TRANSPORT_HPP
 
-#include "xos/network/socket/ip/endpoints.hpp"
-#include "xos/network/socket/local/endpoint.hpp"
+#include "xos/network/socket/local/transport.hpp"
 
 namespace xos {
 namespace network {
 namespace socket {
+namespace local {
+namespace stream {
 
+/// class transportt
+template <class TImplements = local::transport>
+class exported transportt: virtual public TImplements {
+public:
+    typedef TImplements implements;
+    typedef transportt derives; 
+    
+    typedef typename implements::domain_t domain_t;
+    enum { domain_unspec = implements::domain_unspec };
+    
+    typedef typename implements::type_t type_t;
+    enum { type_unspec = implements::type_unspec };
+    
+    typedef typename implements::protocol_t protocol_t;
+    enum { protocol_unspec = implements::protocol_unspec };
+
+    /// constructors / destructor
+    virtual ~transportt() {
+    }
+
+    /// type
+    virtual type_t type() const {
+        return SOCK_STREAM;
+    }
+}; /// class transportt
+typedef transportt<> transport;
+
+} /// namespace stream
+} /// namespace local
 } /// namespace socket
 } /// namespace network
 } /// namespace xos
 
-#endif /// XOS_NETWORK_SOCKET_ENDPOINTS_HPP
+#endif /// XOS_NETWORK_SOCKET_LOCAL_STREAM_TRANSPORT_HPP

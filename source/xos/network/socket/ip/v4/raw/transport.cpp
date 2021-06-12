@@ -13,23 +13,33 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: endpoints.hpp
+///   File: transport.cpp
 ///
 /// Author: $author$
-///   Date: 5/22/2021
+///   Date: 5/31/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_ENDPOINTS_HPP
-#define XOS_NETWORK_SOCKET_ENDPOINTS_HPP
+#include "xos/network/socket/ip/v4/raw/transport.hpp"
 
-#include "xos/network/socket/ip/endpoints.hpp"
-#include "xos/network/socket/local/endpoint.hpp"
+#if !defined(XOS_NETWORK_SOCKET_IP_V4_RAW_TRANSPORT_INSTANCE)
+///#define XOS_NETWORK_SOCKET_IP_V4_RAW_TRANSPORT_INSTANCE
+#endif /// !defined(XOS_NETWORK_SOCKET_IP_V4_RAW_TRANSPORT_INSTANCE)
 
 namespace xos {
 namespace network {
 namespace socket {
+namespace ip {
+namespace v4 {
+namespace raw {
 
+///  Class: transportt
+#if defined(XOS_NETWORK_SOCKET_IP_V4_RAW_TRANSPORT_INSTANCE)
+static transport the_transport;
+#endif /// defined(XOS_NETWORK_SOCKET_IP_V4_RAW_TRANSPORT_INSTANCE)
+
+
+} /// namespace raw
+} /// namespace v4
+} /// namespace ip
 } /// namespace socket
 } /// namespace network
 } /// namespace xos
-
-#endif /// XOS_NETWORK_SOCKET_ENDPOINTS_HPP

@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////
 #include "xos/network/socket/transports.hpp"
 #include "xos/network/socket/ip/transports.cpp"
+#include "xos/network/socket/local/transports.cpp"
 
 namespace xos {
 namespace network {

@@ -20,6 +20,7 @@
 ///////////////////////////////////////////////////////////////////////
 #include "xos/network/socket/addresses.hpp"
 #include "xos/network/socket/ip/addresses.cpp"
+#include "xos/network/socket/local/address.cpp"
 #include "xos/network/socket/address.cpp"
 
 namespace xos {

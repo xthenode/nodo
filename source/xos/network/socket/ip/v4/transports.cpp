@@ -19,6 +19,7 @@
 ///   Date: 5/24/2021
 ///////////////////////////////////////////////////////////////////////
 #include "xos/network/socket/ip/v4/transports.hpp"
+#include "xos/network/socket/ip/v4/raw/transport.cpp"
 #include "xos/network/socket/ip/v4/tcp/transport.cpp"
 #include "xos/network/socket/ip/v4/udp/transport.cpp"
 

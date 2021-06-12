@@ -153,6 +153,16 @@ public:
         return 0;
     }
 
+    /// ...address_bytes...
+    virtual byte_t* recv_address_bytes(size_t& length) const {
+        length = 0;
+        return 0;
+    }
+    virtual byte_t* address_bytes(size_t& length) const {
+        length = 0;
+        return 0;
+    }
+
     /// ...socket_address...
     virtual attached_t recv_socket_address(socklen_t& len) const {
         len = this->socket_address_len();

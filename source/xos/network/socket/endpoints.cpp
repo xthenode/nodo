@@ -19,10 +19,8 @@
 ///   Date: 5/22/2021
 ///////////////////////////////////////////////////////////////////////
 #include "xos/network/socket/endpoints.hpp"
-
-#if !defined(XOS_NETWORK_SOCKET_ENDPOINTS_INSTANCE)
-//#define XOS_NETWORK_SOCKET_ENDPOINTS_INSTANCE
-#endif /// !defined(XOS_NETWORK_SOCKET_ENDPOINTS_INSTANCE)
+#include "xos/network/socket/ip/endpoints.cpp"
+#include "xos/network/socket/local/endpoint.cpp"
 
 namespace xos {
 namespace network {

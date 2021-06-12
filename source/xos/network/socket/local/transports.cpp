@@ -13,23 +13,22 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: endpoints.hpp
+///   File: transports.cpp
 ///
 /// Author: $author$
-///   Date: 5/22/2021
+///   Date: 6/12/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_ENDPOINTS_HPP
-#define XOS_NETWORK_SOCKET_ENDPOINTS_HPP
-
-#include "xos/network/socket/ip/endpoints.hpp"
-#include "xos/network/socket/local/endpoint.hpp"
+#include "xos/network/socket/local/transports.hpp"
+#include "xos/network/socket/local/transport.cpp"
+#include "xos/network/socket/local/dgram/transport.cpp"
+#include "xos/network/socket/local/stream/transport.cpp"
 
 namespace xos {
 namespace network {
 namespace socket {
+namespace local {
 
+} /// namespace local
 } /// namespace socket
 } /// namespace network
 } /// namespace xos
-
-#endif /// XOS_NETWORK_SOCKET_ENDPOINTS_HPP

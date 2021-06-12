@@ -83,7 +83,17 @@ protected:
     typedef typename extends::out_writer_t out_writer_t;
     typedef typename extends::err_writer_t err_writer_t;
 
-    /// on_stream_option_set / on_dgram_option_set
+    /// on_raw_option_set / on_stream_option_set / on_dgram_option_set
+    virtual int on_raw_option_set
+    (int optval, const char_t* optarg, const char_t* optname, 
+     int optind, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = this->all_set_sockets_raw_client_run(argc, argv, env))) {
+            if (!(err = this->all_set_sockets_raw_server_run(argc, argv, env))) {
+            }
+        }
+        return err;
+    }
     virtual int on_stream_option_set
     (int optval, const char_t* optarg, const char_t* optname, 
      int optind, int argc, char_t** argv, char_t** env) {

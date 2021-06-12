@@ -13,71 +13,34 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: address.hpp
+///   File: endpoint.hpp
 ///
 /// Author: $author$
-///   Date: 5/22/2021
+///   Date: 6/11/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_ADDRESS_HPP
-#define XOS_NETWORK_SOCKET_ADDRESS_HPP
+#ifndef XOS_NETWORK_ENDPOINT_HPP
+#define XOS_NETWORK_ENDPOINT_HPP
 
 #include "xos/network/address.hpp"
-#include "xos/base/string.hpp"
-#include <sys/socket.h>
-
-#if !defined(BSDSOCK)
-#if defined(BSD) || defined(WINSOCK_2)
-#define BSDSOCK
-#endif /// !defined(BSD) || defined(WINSOCK_2)
-#endif /// !defined(BSDSOCK)
-
-#if !defined(NO_IP6_SOCK)
-#if defined(WINSOCK_1)
-#define NO_IP6_SOCK
-#endif /// defined(WINSOCK_1)
-#endif /// !defined(NO_IP6_SOCK)
 
 namespace xos {
 namespace network {
-namespace socket {
 
-/// enum addrindex_t
-typedef int addrindex_t;
-enum {
-    first_addrindex = 0,
-    last_addrindex = -1
-}; /// enum addrindex_t
-
-/// struct sockaddr
-typedef struct sockaddr sockaddr_t;
-
-/// socklen_t
-typedef ::socklen_t socklen_t;
-
-/// sockport_t
-typedef unsigned short sockport_t;
-
-/// sockstring_t
-typedef string sockstring_t;
-
-/// sockchar_t
-typedef sockstring_t::char_t sockchar_t;
-
-/// class addresst
-template <class TImplements = network::address>
-class exported addresst: virtual public TImplements {
+/// class endpointt
+template <class TImplements = address>
+class exported endpointt: virtual public TImplements {
 public:
     typedef TImplements implements;
-    typedef addresst derives; 
+    typedef endpointt derives; 
     
     typedef typename implements::family_t family_t;
-    enum { family_unspec = AF_UNSPEC };
+    enum { family_unspec = implements::family_unspec };
     
     typedef typename implements::version_t version_t;
-    enum { version_unspec = 0 };
+    enum { version_unspec = implements::version_unspec };
 
     /// constructors / destructor
-    virtual ~addresst() {
+    virtual ~endpointt() {
     }
 
     /// family /  version
@@ -87,19 +50,19 @@ public:
     virtual version_t version() const {
         return version_unspec;
     }
-}; /// class addresst
-typedef addresst<> address;
+}; /// class endpointt
+typedef endpointt<> endpoint;
 
 namespace extended {
-/// class addresst
+/// class endpointt
 template 
-<class TExtends = network::extended::address, class TImplements = socket::address>
+<class TExtends = network::extended::address, class TImplements = network::endpoint>
 
-class exported addresst: virtual public TImplements, public TExtends {
+class exported endpointt: virtual public TImplements, public TExtends {
 public:
     typedef TImplements implements;
     typedef TExtends extends;
-    typedef addresst derives;
+    typedef endpointt derives;
 
     typedef typename implements::family_t family_t;
     enum { family_unspec = implements::family_unspec };
@@ -108,18 +71,17 @@ public:
     enum { version_unspec = implements::version_unspec };
 
     /// constructor / destructor
-    addresst(const addresst& copy): extends(copy) {
+    endpointt(const endpointt& copy): extends(copy) {
     }
-    addresst() {
+    endpointt() {
     }
-    virtual ~addresst() {
+    virtual ~endpointt() {
     }
-}; /// class addresst
-typedef addresst<> address;
+}; /// class endpointt
+typedef endpointt<> endpoint;
 } /// namespace extended
 
-} /// namespace socket
 } /// namespace network
 } /// namespace xos
 
-#endif /// XOS_NETWORK_SOCKET_ADDRESS_HPP
+#endif /// XOS_NETWORK_ENDPOINT_HPP

@@ -13,23 +13,25 @@
 /// or otherwise) arising in any way out of the use of this software, 
 /// even if advised of the possibility of such damage.
 ///
-///   File: endpoints.hpp
+///   File: endpoint.cpp
 ///
 /// Author: $author$
-///   Date: 5/22/2021
+///   Date: 6/11/2021
 ///////////////////////////////////////////////////////////////////////
-#ifndef XOS_NETWORK_SOCKET_ENDPOINTS_HPP
-#define XOS_NETWORK_SOCKET_ENDPOINTS_HPP
+#include "xos/network/endpoint.hpp"
 
-#include "xos/network/socket/ip/endpoints.hpp"
-#include "xos/network/socket/local/endpoint.hpp"
+#if !defined(XOS_NETWORK_ENDPOINT_INSTANCE)
+///#define XOS_NETWORK_ENDPOINT_INSTANCE
+#endif /// !defined(XOS_NETWORK_ENDPOINT_INSTANCE)
 
 namespace xos {
 namespace network {
-namespace socket {
 
-} /// namespace socket
+///  Class: endpointt
+#if defined(XOS_NETWORK_ENDPOINT_INSTANCE)
+static endpoint the_endpoint;
+#endif /// defined(XOS_NETWORK_ENDPOINT_INSTANCE)
+
+
 } /// namespace network
 } /// namespace xos
-
-#endif /// XOS_NETWORK_SOCKET_ENDPOINTS_HPP
